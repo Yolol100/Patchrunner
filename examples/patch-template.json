@@ -1,0 +1,27 @@
+{
+  "format_version": "2.0",
+  "package_name": "Example plugin patch",
+  "description": "Small reviewed patch for one installed plugin.",
+  "target": {
+    "plugin": "example-plugin/example-plugin.php"
+  },
+  "operations": [
+    {
+      "type": "replace_once",
+      "file": "includes/class-example-plugin.php",
+      "find": "return 'old value';",
+      "replace": "return 'new value';"
+    },
+    {
+      "type": "insert_after_once",
+      "file": "example-plugin.php",
+      "anchor": "add_action( 'init', 'example_boot' );",
+      "content": "\nadd_action( 'admin_notices', 'example_notice' );\n"
+    },
+    {
+      "type": "remove_once",
+      "file": "includes/legacy.php",
+      "find": "add_action( 'wp_footer', 'example_old_debug_output' );\n"
+    }
+  ]
+}

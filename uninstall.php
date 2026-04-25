@@ -1,0 +1,31 @@
+<?php
+/**
+ * Uninstall AI Patch Runner.
+ */
+
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+    exit;
+}
+
+$settings = get_option( 'aipr_settings', array() );
+if ( empty( $settings['cleanup_on_uninstall'] ) ) {
+    return;
+}
+
+delete_option( 'aipr_settings' );
+delete_option( 'aipr_action_log' );
+delete_option( 'aipr_backup_log' );
+delete_option( 'aipr_patch_library' );
+
+$uploads = wp_upload_dir();
+if ( empty( $uploads['error'] ) ) {
+    $backup_root = trailingslashit( $uploads['basedir'] ) . 'aipr-backups';
+    if ( is_dir( $backup_root ) ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        global $wp_filesystem;
+        WP_Filesystem();
+        if ( is_object( $wp_filesystem ) && method_exists( $wp_filesystem, 'rmdir' ) ) {
+            $wp_filesystem->rmdir( $backup_root, true );
+        }
+    }
+}
