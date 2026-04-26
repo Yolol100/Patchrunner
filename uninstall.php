@@ -3,9 +3,11 @@
  * Uninstall AI Patch Runner.
  */
 
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) || ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+wp_clear_scheduled_hook( 'aipr_cleanup_old_backups' );
 
 $settings = get_option( 'aipr_settings', array() );
 if ( empty( $settings['cleanup_on_uninstall'] ) ) {
