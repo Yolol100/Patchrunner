@@ -293,7 +293,7 @@ class AIPR_Admin {
                 <?php if ( empty( $logs ) ) : ?><p class="aipr-muted"><?php esc_html_e( 'Nog geen patches toegepast.', 'ai-patch-runner' ); ?></p><?php else : ?>
                     <div class="aipr-list">
                         <?php foreach ( $logs as $entry ) : ?>
-                            <article class="aipr-list-item"><strong><?php echo esc_html( $entry['package_name'] ); ?></strong><span><?php echo esc_html( $entry['plugin'] ); ?></span><span><?php echo esc_html( $entry['date'] ); ?></span></article>
+                            <article class="aipr-list-item"><strong><?php echo esc_html( $entry['package_name'] ?? '' ); ?></strong><span><?php echo esc_html( $entry['plugin'] ?? '' ); ?></span><span><?php echo esc_html( $entry['date'] ?? '' ); ?></span></article>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -301,7 +301,7 @@ class AIPR_Admin {
             <section class="aipr-card aipr-span-2">
                 <div class="aipr-card-head"><div><h2><?php esc_html_e( 'Recente back-ups', 'ai-patch-runner' ); ?></h2></div></div>
                 <?php if ( empty( $backups ) ) : ?><p class="aipr-muted"><?php esc_html_e( 'Nog geen back-ups beschikbaar.', 'ai-patch-runner' ); ?></p><?php else : ?>
-                    <div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Bestand', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $backups as $backup ) : ?><tr><td><code><?php echo esc_html( basename( $backup['file'] ) ); ?></code></td><td><?php echo esc_html( $backup['plugin'] ); ?></td><td><?php echo esc_html( $backup['date'] ); ?></td></tr><?php endforeach; ?></tbody></table></div>
+                    <div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Bestand', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $backups as $backup ) : ?><tr><td><code><?php echo esc_html( basename( (string) ( $backup['file'] ?? '' ) ) ); ?></code></td><td><?php echo esc_html( $backup['plugin'] ?? '' ); ?></td><td><?php echo esc_html( $backup['date'] ?? '' ); ?></td></tr><?php endforeach; ?></tbody></table></div>
                 <?php endif; ?>
             </section>
         </div>
@@ -427,21 +427,21 @@ class AIPR_Admin {
                     <?php foreach ( $library as $item ) : ?>
                         <article class="aipr-list-card">
                             <div class="aipr-list-card-head">
-                                <div><h3><?php echo esc_html( $item['package_name'] ); ?></h3><p class="aipr-muted"><?php echo esc_html( $item['description'] ); ?></p></div>
-                                <div class="aipr-chip-row"><span class="aipr-chip"><?php echo esc_html( $item['plugin'] ); ?></span><span class="aipr-chip"><?php echo esc_html( sprintf( _n( '%d operation', '%d operations', count( $item['package']['operations'] ), 'ai-patch-runner' ), count( $item['package']['operations'] ) ) ); ?></span></div>
+                                <div><h3><?php echo esc_html( $item['package_name'] ?? '' ); ?></h3><p class="aipr-muted"><?php echo esc_html( $item['description'] ?? '' ); ?></p></div>
+                                <div class="aipr-chip-row"><span class="aipr-chip"><?php echo esc_html( $item['plugin'] ?? '' ); ?></span><span class="aipr-chip"><?php echo esc_html( sprintf( _n( '%d operation', '%d operations', count( $item['package']['operations'] ?? array() ), 'ai-patch-runner' ), count( $item['package']['operations'] ?? array() ) ) ); ?></span></div>
                             </div>
                             <div class="aipr-actions aipr-actions--split">
-                                <small class="aipr-muted"><?php echo esc_html( $item['date'] ); ?></small>
+                                <small class="aipr-muted"><?php echo esc_html( $item['date'] ?? '' ); ?></small>
                                 <div class="aipr-chip-row">
                                     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
                                         <input type="hidden" name="action" value="aipr_export_patch_library" />
-                                        <input type="hidden" name="item_id" value="<?php echo esc_attr( $item['id'] ); ?>" />
+                                        <input type="hidden" name="item_id" value="<?php echo esc_attr( $item['id'] ?? '' ); ?>" />
                                         <?php wp_nonce_field( 'aipr_export_patch_library', 'aipr_library_nonce' ); ?>
                                         <button class="button aipr-button-secondary" type="submit"><?php esc_html_e( 'Export JSON', 'ai-patch-runner' ); ?></button>
                                     </form>
                                     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('Deze opgeslagen patch verwijderen?');">
                                         <input type="hidden" name="action" value="aipr_delete_patch_library" />
-                                        <input type="hidden" name="item_id" value="<?php echo esc_attr( $item['id'] ); ?>" />
+                                        <input type="hidden" name="item_id" value="<?php echo esc_attr( $item['id'] ?? '' ); ?>" />
                                         <?php wp_nonce_field( 'aipr_delete_patch_library', 'aipr_library_nonce' ); ?>
                                         <button class="button aipr-button-secondary" type="submit"><?php esc_html_e( 'Verwijderen', 'ai-patch-runner' ); ?></button>
                                     </form>
@@ -566,7 +566,7 @@ class AIPR_Admin {
         <section class="aipr-card">
             <div class="aipr-card-head"><div><h2><?php esc_html_e( 'Back-upgeschiedenis', 'ai-patch-runner' ); ?></h2></div></div>
             <?php if ( empty( $backups ) ) : ?><p class="aipr-muted"><?php esc_html_e( 'Geen back-ups beschikbaar.', 'ai-patch-runner' ); ?></p><?php else : ?>
-                <div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Bestand', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Actie', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $backups as $backup ) : ?><tr><td><code><?php echo esc_html( $backup['file'] ); ?></code></td><td><?php echo esc_html( $backup['plugin'] ); ?></td><td><?php echo esc_html( $backup['date'] ); ?></td><td><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><input type="hidden" name="action" value="aipr_rollback_backup" /><input type="hidden" name="backup_id" value="<?php echo esc_attr( $backup['id'] ); ?>" /><?php wp_nonce_field( 'aipr_rollback_backup', 'aipr_rollback_nonce' ); ?><button class="button aipr-button-secondary" type="submit"><?php esc_html_e( 'Rollback', 'ai-patch-runner' ); ?></button></form></td></tr><?php endforeach; ?></tbody></table></div>
+                <div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Bestand', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Actie', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $backups as $backup ) : ?><tr><td><code><?php echo esc_html( $backup['file'] ?? '' ); ?></code></td><td><?php echo esc_html( $backup['plugin'] ?? '' ); ?></td><td><?php echo esc_html( $backup['date'] ?? '' ); ?></td><td><form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><input type="hidden" name="action" value="aipr_rollback_backup" /><input type="hidden" name="backup_id" value="<?php echo esc_attr( $backup['id'] ?? '' ); ?>" /><?php wp_nonce_field( 'aipr_rollback_backup', 'aipr_rollback_nonce' ); ?><button class="button aipr-button-secondary" type="submit"><?php esc_html_e( 'Rollback', 'ai-patch-runner' ); ?></button></form></td></tr><?php endforeach; ?></tbody></table></div>
             <?php endif; ?>
         </section>
         <?php
@@ -579,7 +579,7 @@ class AIPR_Admin {
         ?>
         <section class="aipr-card">
             <div class="aipr-card-head"><div><h2><?php esc_html_e( 'Patch-activiteitenlog', 'ai-patch-runner' ); ?></h2></div></div>
-            <?php if ( empty( $log ) ) : ?><p class="aipr-muted"><?php esc_html_e( 'Nog geen patch-activiteit.', 'ai-patch-runner' ); ?></p><?php else : ?><div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Pakket', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Writes', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'User', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $log as $entry ) : ?><tr><td><?php echo esc_html( $entry['package_name'] ); ?></td><td><?php echo esc_html( $entry['plugin'] ); ?></td><td><?php echo esc_html( (string) $entry['writes'] ); ?></td><td><?php echo esc_html( $entry['user'] ); ?></td><td><?php echo esc_html( $entry['date'] ); ?></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?>
+            <?php if ( empty( $log ) ) : ?><p class="aipr-muted"><?php esc_html_e( 'Nog geen patch-activiteit.', 'ai-patch-runner' ); ?></p><?php else : ?><div class="aipr-table-wrap"><table class="widefat striped"><thead><tr><th scope="col"><?php esc_html_e( 'Pakket', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Plugin', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Writes', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'User', 'ai-patch-runner' ); ?></th><th scope="col"><?php esc_html_e( 'Datum', 'ai-patch-runner' ); ?></th></tr></thead><tbody><?php foreach ( $log as $entry ) : ?><tr><td><?php echo esc_html( $entry['package_name'] ?? '' ); ?></td><td><?php echo esc_html( $entry['plugin'] ?? '' ); ?></td><td><?php echo esc_html( (string) ( $entry['writes'] ?? 0 ) ); ?></td><td><?php echo esc_html( $entry['user'] ?? '' ); ?></td><td><?php echo esc_html( $entry['date'] ?? '' ); ?></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?>
         </section>
         <?php
         $this->render_shell_end();
@@ -751,7 +751,8 @@ class AIPR_Admin {
 
         $package = json_decode( $raw, true );
         if ( ! is_array( $package ) ) {
-            $this->redirect_notice( 'error', __( 'Ongeldig JSON-patchpakket.', 'ai-patch-runner' ), 'ai-patch-runner-apply' );
+            $decode_error = function_exists( 'json_last_error_msg' ) ? json_last_error_msg() : __( 'Onbekende JSON-fout.', 'ai-patch-runner' );
+            $this->redirect_notice( 'error', sprintf( __( 'Ongeldig JSON-patchpakket: %s', 'ai-patch-runner' ), $decode_error ), 'ai-patch-runner-apply' );
         }
 
         $shape_errors = $this->validate_package_shape( $package );
@@ -879,7 +880,11 @@ class AIPR_Admin {
             if ( ( $item['id'] ?? '' ) === $item_id ) {
                 nocache_headers();
                 header( 'Content-Type: application/json; charset=utf-8' );
-                header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $item['package_name'] ) . '.json"' );
+                $filename = sanitize_file_name( (string) ( $item['package_name'] ?? '' ) );
+                if ( '' === $filename ) {
+                    $filename = 'aipr-patch';
+                }
+                header( 'Content-Disposition: attachment; filename="' . $filename . '.json"' );
                 echo wp_json_encode( $item['package'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
                 exit;
             }
