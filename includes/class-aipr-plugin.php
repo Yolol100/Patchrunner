@@ -32,10 +32,6 @@ class AIPR_Plugin {
     }
 
     public function boot() {
-        // Admin-only plugin: avoid loading translations on every frontend request.
-        if ( is_admin() ) {
-            add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-        }
 
         if ( is_admin() ) {
             $admin = new AIPR_Admin();
@@ -60,9 +56,5 @@ class AIPR_Plugin {
             __( 'AI Patch Runner', 'ai-patch-runner' ),
             wp_kses_post( wpautop( $content ) )
         );
-    }
-
-    public function load_textdomain() {
-        load_plugin_textdomain( 'ai-patch-runner', false, dirname( plugin_basename( AIPR_FILE ) ) . '/languages' );
     }
 }
