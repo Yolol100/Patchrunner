@@ -1,5 +1,9 @@
 # AI Patch Runner
 
+> **Supporting engineering project · WordPress/PHP · guarded plugin patching · preview and rollback**
+
+**Built by:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
+
 AI Patch Runner is an admin-only WordPress plugin for reviewing, previewing, applying and rolling back structured JSON patch packages for installed plugins.
 
 ## Production safety
