@@ -68,6 +68,12 @@ CHANGELOG.md              Release history
 uninstall.php             Controlled cleanup
 ```
 
+## Verification
+
+The repository now verifies more than PHP syntax. GitHub Actions runs the declared PHP matrix and clean WordPress activation/deactivation checks on the minimum supported WordPress release and WordPress 7.1. This gives reviewers direct runtime evidence that the packaged plugin can load in a clean WordPress environment.
+
+See [PHP compatibility](.github/workflows/php-compatibility.yml) for the executable contract.
+
 ## Portfolio context
 
 This repository focuses on guarded maintenance tooling rather than a client-facing feature. It complements the larger WordPress portfolio by showing defensive file operations, environment gates and rollback-oriented engineering.
