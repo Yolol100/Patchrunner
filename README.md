@@ -14,6 +14,18 @@ Editing production plugin files directly can make recovery difficult when a patc
 
 **Inspect the evidence:** [workflow](#workflow) · [production restrictions](#production-safety) · [runtime checks](#verification).
 
+## Preview the WordPress interface
+
+| Admin overview | Reviewed patch workflow |
+| :---: | :---: |
+| [![AI Patch Runner admin overview from Andrew's portfolio](https://andrewbaeten.nl/wp-content/uploads/2026/04/ai-patch-runner-admin-overview-1.png)](https://andrewbaeten.nl/ai-patch-runner/) | [![AI Patch Runner reviewed-patch workflow screenshot](https://andrewbaeten.nl/wp-content/uploads/2026/04/ai-patch-runner-workflow-screen.png)](https://andrewbaeten.nl/ai-patch-runner/) |
+
+[Read the AI Patch Runner portfolio case study](https://andrewbaeten.nl/ai-patch-runner/).
+
+**Why this matters:** editing plugin files on a live site can cause outages. This tool shows the proposed changes, checks the target and permissions, creates a backup and keeps an explicit recovery path before a patch can be applied.
+
+*Screenshots are from a public portfolio case. GitHub CI checks PHP/bootstrap compatibility, not every production patch or rollback outcome.*
+
 ## What it demonstrates
 
 | Area | Implementation |
