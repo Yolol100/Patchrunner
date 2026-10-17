@@ -6,6 +6,14 @@
 
 AI Patch Runner is an admin-only WordPress plugin for reviewing structured patch packages before they change an installed plugin. It is designed around controlled inspection, exact previews, backups and rollback rather than blind file replacement.
 
+## Why this tool matters
+
+Editing production plugin files directly can make recovery difficult when a patch is incomplete or targets the wrong version. AI Patch Runner makes the proposed file changes visible **before** an authorized WordPress administrator applies them, with backup and rollback as explicit parts of the flow.
+
+**Example review (staging only):** Inspect the [sample package](examples/patch-template.json), review the target files and exact proposed diff, confirm permission and environment gates, and retain the backup for recovery. This is a maintenance-tool example, **not** a claim that automated patching of an arbitrary live site is safe.
+
+**Inspect the evidence:** [workflow](#workflow) · [production restrictions](#production-safety) · [runtime checks](#verification).
+
 ## What it demonstrates
 
 | Area | Implementation |
