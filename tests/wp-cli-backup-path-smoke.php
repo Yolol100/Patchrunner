@@ -16,12 +16,16 @@ $guard_dir = $base . '/ci-path-' . $nonce;
 $outside = sys_get_temp_dir() . '/aipr-external-' . $nonce;
 $link = $guard_dir . '/external-link';
 $outside_file = $outside . '/untrusted.txt';
+$inside_file = $guard_dir . '/existing-backup.php';
+$file_link = $guard_dir . '/external-file.php';
 
-if (!wp_mkdir_p($guard_dir) || !mkdir($outside, 0700) || file_put_contents($outside_file, 'CI-only data') === false) {
+if (!wp_mkdir_p($guard_dir) || !mkdir($outside, 0700)
+    || file_put_contents($outside_file, 'CI-only data') === false
+    || file_put_contents($inside_file, '<?php // trusted fixture') === false) {
     throw new RuntimeException('Cannot create isolated path fixtures.');
 }
 try {
-    if (!symlink($outside, $link)) {
+    if (!symlink($outside, $link) || !symlink($outside_file, $file_link)) {
         throw new RuntimeException('CI filesystem cannot create a symlink fixture.');
     }
 
@@ -31,7 +35,9 @@ try {
 
     $cases = [
         ['normal future backup path', $guard_dir . '/new-backup.php', true],
-        ['existing backup inside directory', $outside_file, false],
+        ['existing trusted backup', $inside_file, true],
+        ['existing file outside backup root', $outside_file, false],
+        ['symlink file into outside directory', $file_link, false],
         ['parent traversal', $guard_dir . '/../not-a-backup.txt', false],
         ['symlink into outside directory', $link . '/untrusted.txt', false],
     ];
@@ -44,6 +50,12 @@ try {
     }
     echo "AI Patch Runner backup containment: OK\n";
 } finally {
+    if (is_link($file_link)) {
+        unlink($file_link);
+    }
+    if (file_exists($inside_file)) {
+        unlink($inside_file);
+    }
     if (is_link($link)) {
         unlink($link);
     }
