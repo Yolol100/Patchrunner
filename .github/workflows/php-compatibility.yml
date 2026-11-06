@@ -115,6 +115,12 @@ jobs:
           php /tmp/wp-cli.phar plugin deactivate ai-patch-runner --path="$runtime"
           php /tmp/wp-cli.phar plugin activate ai-patch-runner --path="$runtime"
 
+      - name: Reject backup symlink escapes without patching plugin files
+        shell: bash
+        run: |
+          set -euo pipefail
+          php /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/wp-cli-backup-path-smoke.php" --path=/tmp/plugin-runtime
+
       - name: Reject runtime PHP errors
         if: always()
         shell: bash

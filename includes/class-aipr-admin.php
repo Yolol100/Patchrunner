@@ -1500,10 +1500,34 @@ class AIPR_Admin {
             return false;
         }
         $normalized = wp_normalize_path( (string) $path );
-        if ( false !== strpos( $normalized, '../' ) ) {
+        if ( false !== strpos( $normalized, '../' ) || ! str_starts_with( $normalized, $base ) ) {
             return false;
         }
-        return str_starts_with( $normalized, $base );
+
+        // A lexical prefix is insufficient: a directory or file may be a symlink.
+        $uploads = wp_upload_dir();
+        $uploads_real = empty( $uploads['error'] ) ? realpath( $uploads['basedir'] ) : false;
+        $base_real = realpath( $base );
+        $parent_real = realpath( dirname( $normalized ) );
+        if ( false === $uploads_real || false === $base_real || false === $parent_real ) {
+            return false;
+        }
+
+        $uploads_prefix = trailingslashit( wp_normalize_path( $uploads_real ) );
+        $base_prefix = trailingslashit( wp_normalize_path( $base_real ) );
+        $parent_prefix = trailingslashit( wp_normalize_path( $parent_real ) );
+        if ( ! str_starts_with( $base_prefix, $uploads_prefix )
+            || ! str_starts_with( $parent_prefix, $base_prefix ) ) {
+            return false;
+        }
+
+        if ( file_exists( $normalized ) || is_link( $normalized ) ) {
+            $file_real = realpath( $normalized );
+            return false !== $file_real && str_starts_with( wp_normalize_path( $file_real ), $base_prefix );
+        }
+
+        // New backup files are allowed only under an already resolved parent.
+        return true;
     }
 
     private function harden_backup_directory( $backup_dir ) {
